@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customimage1-deployment
+  labels:
+    app: customimage1
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: customimage1
+  template:
+    metadata:
+      labels:
+        app: customimage1
+
+    spec:
+      containers:
+      - name: customimage1
+        image: sumankp2109.azurecr.io/httpdimg:customimage
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: customimage1
+  namespace: default
+  labels:
+    app: customimage1
+ 
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: http
+    port: 8085
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: customimage1
+  type: LoadBalancer
